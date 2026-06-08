@@ -47,13 +47,8 @@ jobs:
       - name: Install dependencies
         run: yarn install --immutable
 
-      - name: Build dependencies then app shell
-        run: |
-          echo "→ Building esm-styleguide first..."
-          yarn workspace @openmrs/esm-styleguide build
-
-          echo "→ Building app shell..."
-          yarn workspace @openmrs/esm-app-shell build --mode production
+      - name: Build all packages
+        run: yarn turbo build --filter=@openmrs/esm-app-shell...
 
       - name: Find built output
         id: find-output
