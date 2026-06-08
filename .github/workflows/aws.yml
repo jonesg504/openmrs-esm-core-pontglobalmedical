@@ -155,9 +155,8 @@ jobs:
               \"echo → Verifying index.html references new bundle...\",
               \"grep -o 'openmrs\\.[a-f0-9]*\\.js' \${FRONTEND_DIR}/index.html\",
 
-              \"echo → Pruning old backups (keeping 5 most recent)...\",
-              \"ls -dt ${{ env.BACKUP_DIR }}/*/ 2>/dev/null | tail -n +6 | xargs rm -rf || true\",
-
+              \"echo → Pruning old backups...\",
+              \"ls -dt ${{ env.BACKUP_DIR }}/*/ 2>/dev/null | awk 'NR>5' | xargs rm -rf || true\",
               \"echo === Frontend deploy complete ===\"
             ]" \
             --query "Command.CommandId" \
