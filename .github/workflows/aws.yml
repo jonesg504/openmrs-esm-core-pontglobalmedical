@@ -116,8 +116,8 @@ jobs:
       - name: Upload build to S3
         run: |
           echo "→ Uploading frontend bundle to S3..."
-          aws s3 sync dist/ s3://${{ secrets.S3_DEPLOY_BUCKET }}/frontend-deploy/ \
-            --delete \
+          aws s3 cp dist/ s3://${{ secrets.S3_DEPLOY_BUCKET }}/frontend-deploy/ \
+            --recursive \
             --exclude "*.map"
           echo "✓ Uploaded to S3"
 
