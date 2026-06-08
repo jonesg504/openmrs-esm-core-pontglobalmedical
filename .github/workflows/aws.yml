@@ -149,10 +149,11 @@ jobs:
               \"aws s3 sync s3://${{ secrets.S3_DEPLOY_BUCKET }}/frontend-deploy/ \${FRONTEND_DIR}/ --exclude '*.map'\",
 
               \"echo → Updating index.html to reference new bundle: ${MAIN_JS_NAME}...\",
-              \"sed -i 's/openmrs\\\\.[a-f0-9]*\\\\.js/${MAIN_JS_NAME}/g' \${FRONTEND_DIR}/index.html\",
-
+              \"OLD_JS=\$(grep -o 'openmrs\\.[a-f0-9]*\\.js' \${FRONTEND_DIR}/index.html | head -1)\",
+              \"echo Old bundle was: \${OLD_JS}\",
+              \"sed -i 's|'\${OLD_JS}'|${MAIN_JS_NAME}|g' \${FRONTEND_DIR}/index.html\",
               \"echo → Verifying index.html references new bundle...\",
-              \"grep -o 'openmrs\\\\.[a-f0-9]*\\\\.js' \${FRONTEND_DIR}/index.html\",
+              \"grep -o 'openmrs\\.[a-f0-9]*\\.js' \${FRONTEND_DIR}/index.html\",
 
               \"echo → Pruning old backups (keeping 5 most recent)...\",
               \"ls -dt ${{ env.BACKUP_DIR }}/*/ 2>/dev/null | tail -n +6 | xargs rm -rf || true\",
