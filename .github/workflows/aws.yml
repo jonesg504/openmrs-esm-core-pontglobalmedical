@@ -53,23 +53,22 @@ jobs:
       - name: Find built output
         id: find-output
         run: |
-          echo "=== Searching for built JS bundles ==="
-          find . -name "openmrs.*.js" -not -path "*/node_modules/*" 2>/dev/null
-          
-          echo "=== Contents of packages/shell ==="
-          ls packages/shell/ 2>/dev/null || echo "no packages/shell"
-          
-          echo "=== Contents of packages/apps/esm-app-shell ==="
-          ls packages/apps/esm-app-shell/ 2>/dev/null || echo "no packages/apps/esm-app-shell"
-          
-          echo "=== All dist folders ==="
-          find . -type d -name "dist" -not -path "*/node_modules/*" 2>/dev/null
+          BUILD_DIR="packages/shell/esm-app-shell/dist"
+          echo "Contents of build dir:"
+          ls -la "$BUILD_DIR"
 
+          # Find the main JS bundle (openmrs.*.js)
+          MAIN_JS=$(ls "$BUILD_DIR"/openmrs.*.js | grep -v map | head -1)
+          MAIN_JS_NAME=$(basename "$MAIN_JS")
+          echo "Main bundle: $MAIN_JS_NAME"
+          echo "main_js=$MAIN_JS" >> $GITHUB_OUTPUT
+          echo "main_js_name=$MAIN_JS_NAME" >> $GITHUB_OUTPUT
+          echo "build_dir=$BUILD_DIR" >> $GITHUB_OUTPUT
       - name: Upload build output as artifact
         uses: actions/upload-artifact@v4
         with:
           name: frontend-dist
-          path: ${{ steps.find-output.outputs.build_dir }}
+          path: packages/shell/esm-app-shell/dist
           retention-days: 5
 
       - name: Save main JS filename for deploy job
